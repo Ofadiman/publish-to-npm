@@ -9,6 +9,9 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   main:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
@@ -34,17 +37,9 @@ jobs:
         run: pnpm test
       - name: Build
         run: pnpm build
+      - name: Create version
+        run: pnpm changeset version
       - name: Publish to NPM
-        id: changesets
-        uses: changesets/action@v1.4.1
-        with:
-          publish: pnpm changeset publish
-          commit: 'chore: publish packages'
-          createGithubReleases: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish --report-summary
       - name: Debug changesets output
-        run: |
-          echo ${{ steps.changesets.outputs.published }}
-          echo ${{ steps.changesets.outputs.publishedPackages }}
+        run: cat pnpm-publish-summary.json
