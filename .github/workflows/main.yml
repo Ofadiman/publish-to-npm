@@ -35,10 +35,12 @@ jobs:
         run: pnpm check:types
       - name: Run tests
         run: pnpm test
-      - name: Setup npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
       - name: Build
         run: pnpm build
+      - name: Setup npmrc
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+      - name: Push changes
+        run: git push origin main
       - name: Create version
         run: |
           git config user.name "github-actions[bot]"
