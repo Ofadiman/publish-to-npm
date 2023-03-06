@@ -1,0 +1,32 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  main:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.3.0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 7.29.0
+      - name: Setup node
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 18.12.1
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting
+        run: pnpm check:formatting
+      - name: Check types
+        run: pnpm check:types
+      - name: Run tests
+        run: pnpm test
+      - name: Build
+        run: pnpm build
