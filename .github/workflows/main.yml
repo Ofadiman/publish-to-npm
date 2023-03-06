@@ -1,10 +1,6 @@
 name: CI/CD
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
   push:
     branches:
       - main
@@ -39,11 +35,10 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Publish to NPM
-        if: ${{ github.event_name == 'push' }}
         id: changesets
         uses: changesets/action@v1.4.1
         with:
-          publish: pnpm publish
+          publish: pnpm changeset publish
           commit: 'chore: publish packages'
           createGithubReleases: false
         env:
