@@ -38,7 +38,10 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Create version
-        run: pnpm changeset version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pnpm changeset version
       - name: Publish to NPM
         run: pnpm publish --report-summary
       - name: Debug changesets output
