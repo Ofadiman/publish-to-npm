@@ -49,7 +49,7 @@ jobs:
       - name: Push changes
         run: git push origin main
       - name: Publish to NPM
-        run: pnpm publish --report-summary
+        run: pnpm publish --report-summary --force
       - name: Debug files in cwd
         run: ls -lrt
       - name: Debug changesets output
