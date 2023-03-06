@@ -38,7 +38,9 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Setup npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+        run: |
+          pnpm config set access public --location project
+          pnpm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }} --location project
       - name: Push changes
         run: git push origin main
       - name: Create version
