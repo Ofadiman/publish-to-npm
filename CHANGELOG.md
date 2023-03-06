@@ -1,5 +1,11 @@
 # @ofadiman/publish-to-npm
 
+## 0.1.3
+
+### Patch Changes
+
+- 05fe2a1: Debug why report summary file does not exist.
+
 ## 0.1.2
 
 ### Patch Changes
