@@ -11,7 +11,9 @@
   "description": "@ofadiman/publish-to-npm is built for educational purposes and is intended to be used as a learning resource.",
   "devDependencies": {
     "prettier": "^2.8.4",
-    "sort-json": "^2.0.1"
+    "sort-json": "^2.0.1",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5"
   },
   "engines": {
     "node": ">=18"
@@ -43,7 +45,8 @@
     "url": "https://github.com/Ofadiman/publish-to-npm.git"
   },
   "scripts": {
-    "format:json": "sort-json package.json",
+    "build": "tsup",
+    "format:json": "sort-json package.json tsconfig.json",
     "format:ts": "prettier --write src/"
   },
   "types": "dist/index.d.ts",
