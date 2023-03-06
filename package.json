@@ -46,6 +46,9 @@
   },
   "scripts": {
     "build": "tsup",
+    "check:all": "pnpm check:formatting && pnpm check:types",
+    "check:formatting": "prettier --check .",
+    "check:types": "tsc --noEmit",
     "format:all": "pnpm format:json && pnpm format:ts",
     "format:json": "sort-json package.json tsconfig.json",
     "format:ts": "prettier --write ."
