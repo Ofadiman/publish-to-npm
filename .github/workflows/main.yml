@@ -46,6 +46,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           pnpm changeset version
+      - name: Add files and commit changes
+        run: |
+          git add .
+          git commit -m "chore: generate changelog"
       - name: Push changes
         run: git push origin main
       - name: Publish to NPM
