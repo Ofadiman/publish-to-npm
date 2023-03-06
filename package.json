@@ -47,5 +47,9 @@
     "format:ts": "prettier --write src/"
   },
   "types": "dist/index.d.ts",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "volta": {
+    "node": "18.12.1",
+    "pnpm": "7.29.0"
+  }
 }
