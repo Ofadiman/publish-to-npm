@@ -46,8 +46,9 @@
   },
   "scripts": {
     "build": "tsup",
+    "format:all": "pnpm format:json && pnpm format:ts",
     "format:json": "sort-json package.json tsconfig.json",
-    "format:ts": "prettier --write src/"
+    "format:ts": "prettier --write ."
   },
   "types": "dist/index.d.ts",
   "version": "0.1.0",
