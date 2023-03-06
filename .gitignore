@@ -1,5 +1,6 @@
 # Directories
 .idea/
+coverage/
 dist/
 node_modules/
 
