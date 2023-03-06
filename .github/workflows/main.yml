@@ -43,7 +43,6 @@ jobs:
         id: changesets
         uses: changesets/action@v1.4.1
         with:
-          publish: pnpm publish -r
           commit: 'chore: publish packages'
           createGithubReleases: false
         env:

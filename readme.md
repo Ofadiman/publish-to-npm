@@ -10,3 +10,9 @@
 4. Commit all files.
 5. Push changes to a new branch and open a pull request.
 6. Merge pull request to the `main` branch.
+
+# Permission issues
+
+`changesets/action@v1` requires specific permissions to make changes in repository.
+
+![img.png](assets/permissions.png)
