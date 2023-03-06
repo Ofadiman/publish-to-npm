@@ -1,9 +1,15 @@
 name: CI/CD
 
 on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
   push:
     branches:
       - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   main:
@@ -11,6 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3.3.0
+        with:
+          fetch-depth: 0
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.4
         with:
@@ -30,3 +38,18 @@ jobs:
         run: pnpm test
       - name: Build
         run: pnpm build
+      - name: Publish to NPM
+        if: ${{ github.event_name == 'push' }}
+        id: changesets
+        uses: changesets/action@v1.4.1
+        with:
+          publish: pnpm publish -r
+          commit: 'chore: publish packages'
+          createGithubReleases: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Debug changesets output
+        run: |
+          echo ${{ steps.changesets.outputs.published }}
+          echo ${{ steps.changesets.outputs.publishedPackages }}
