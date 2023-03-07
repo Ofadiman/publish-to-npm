@@ -1,5 +1,11 @@
 # @ofadiman/publish-to-npm
 
+## 0.1.4
+
+### Patch Changes
+
+- 82af027: Trigger version.
+
 ## 0.1.3
 
 ### Patch Changes
