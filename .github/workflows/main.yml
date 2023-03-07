@@ -49,7 +49,7 @@ jobs:
       - name: Add files and commit changes
         run: |
           git add .
-          git commit -m "chore: generate changelog"
+          git commit -m "chore: generate changelog\n\n[skip ci]"
       - name: Push changes
         run: git push origin main
       - name: Publish to NPM
