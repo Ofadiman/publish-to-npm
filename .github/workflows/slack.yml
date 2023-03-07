@@ -1,0 +1,34 @@
+name: Slack message
+
+on:
+  push:
+
+jobs:
+  main:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Create slack message
+        id: create_slack_message
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            core.setOutput('res', '*Successfully published*\n```\n  - @ofadiman/test@1.0.0\n```')
+      - name: Send slack message
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ${{ toJson(steps.create_slack_message.outputs.res) }}
+                  }
+                }
+              ]
+            }
