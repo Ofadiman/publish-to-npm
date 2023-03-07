@@ -75,7 +75,7 @@ jobs:
         if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: |
           git add .
-          git commit -m "chore: generate changelog\n\n[skip ci]"
+          git commit -m "chore: generate changelog" -m "" -m "" -m "[skip ci]"
       - name: Push changes
         if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: git push origin main
@@ -106,8 +106,6 @@ jobs:
             core.info(message)
 
             core.setOutput('message', message)
-      - name: Debug slack message
-        run: echo ${{ steps.create_slack_message.outputs.message }}
       - name: Send slack message
         if: ${{ steps.should_publish.outputs.res == 'yes' }}
         uses: slackapi/slack-github-action@v1.23.0
