@@ -58,3 +58,49 @@ jobs:
         run: ls -lrt
       - name: Debug changesets output
         run: cat pnpm-publish-summary.json
+      - name: Create slack message
+        id: create_slack_message
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs')
+
+            const publishSummary = JSON.parse(
+              fs.readFileSync('./pnpm-publish-summary.json', { encoding: 'utf8' }),
+            )
+
+            if (publishSummary.publishedPackages.length === 0) {
+              core.info('There are no packages to publish.')
+              core.setOutput('should_send', false)
+              process.exit(0)
+            }
+
+            let message = '*Successfully published*\n```'
+            publishSummary.publishedPackages.forEach((publishedPackage) => {
+              message += `  - ${publishedPackage.name}@${publishedPackage.version}\n`
+            })
+            message += '```'
+
+            core.info(message)
+
+            core.setOutput('should_send', true)
+            core.setOutput('message', message)
+      - name: Send slack message
+        if: ${{ steps.create_slack_message.outputs.should_send }}
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: C023PKSN2Q7
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.create_slack_message.outputs.message }}"
+                  }
+                }
+              ]
+            }
