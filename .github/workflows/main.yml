@@ -40,44 +40,53 @@ jobs:
 
             const changesetStatus = JSON.parse(fs.readFileSync('./changeset-status.json', { encoding: 'utf8' }))
             core.info(JSON.stringify(changesetStatus))
+            core.info(JSON.stringify(changesetStatus.releases))
+            core.info(changesetStatus.releases.length)
 
             if (changesetStatus.releases.length === 0) {
-              core.setOutput('result', false)
+              core.info('WTF')
+              core.setOutput('res', 'no')
+              core.info(JSON.stringify(changesetStatus.releases))
             } else {
-              core.setOutput('result', true)
+              core.info('OK')
+              core.setOutput('res', 'yes')
+              core.info(JSON.stringify(changesetStatus.releases))
             }
+      - name: Debug output
+        run: |
+          echo "output is: ${{ steps.should_publish.outputs.res }}"
       - name: Generate changelog
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: pnpm changeset version
       - name: Configure git
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
       - name: Build
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: pnpm build
       - name: Setup npmrc
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: |
           pnpm config set access public --location project
           pnpm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }} --location project
       - name: Add files and commit changes
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: |
           git add .
           git commit -m "chore: generate changelog\n\n[skip ci]"
       - name: Push changes
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: git push origin main
       - name: Publish to NPM
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: pnpm publish -r --report-summary
       - name: Debug changesets output
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         run: cat pnpm-publish-summary.json
       - name: Create slack message
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         id: create_slack_message
         uses: actions/github-script@v6
         with:
@@ -103,7 +112,7 @@ jobs:
 
             core.setOutput('message', message)
       - name: Send slack message
-        if: ${{ steps.should_publish.outputs.result == 'true' }}
+        if: ${{ steps.should_publish.outputs.res == 'yes' }}
         uses: slackapi/slack-github-action@v1.23.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
