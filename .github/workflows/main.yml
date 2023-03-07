@@ -97,12 +97,7 @@ jobs:
               fs.readFileSync('./pnpm-publish-summary.json', { encoding: 'utf8' }),
             )
 
-            if (publishSummary.publishedPackages.length === 0) {
-              core.info('There are no packages to publish.')
-              process.exit(0)
-            }
-
-            let message = '*Successfully published*\n```'
+            let message = '*Successfully published*\n```\n'
             publishSummary.publishedPackages.forEach((publishedPackage) => {
               message += `  - ${publishedPackage.name}@${publishedPackage.version}\n`
             })
@@ -111,13 +106,15 @@ jobs:
             core.info(message)
 
             core.setOutput('message', message)
+      - name: Debug slack message
+        run: echo ${{ steps.create_slack_message.outputs.message }}
       - name: Send slack message
         if: ${{ steps.should_publish.outputs.res == 'yes' }}
         uses: slackapi/slack-github-action@v1.23.0
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
         with:
-          channel-id: C023PKSN2Q7
           payload: |
             {
               "blocks": [
