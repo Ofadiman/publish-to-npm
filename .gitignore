@@ -6,3 +6,4 @@ node_modules/
 
 # Files
 .npmrc
+changeset-status.json
