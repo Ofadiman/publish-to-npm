@@ -17,19 +17,24 @@ jobs:
         uses: actions/checkout@v3.3.0
         with:
           fetch-depth: 0
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.4
         with:
           version: 7.29.0
+
       - name: Setup node
         uses: actions/setup-node@v3.6.0
         with:
           node-version: 18.12.1
           cache: pnpm
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
       - name: Changeset status
         run: pnpm changeset status --output changeset-status.json
+
       - name: Find out if there is something to publish
         id: should_publish
         uses: actions/github-script@v6
@@ -45,20 +50,25 @@ jobs:
             } else {
               core.setOutput('value', true)
             }
+
       - name: Debug output
         run: |
           echo "output is: ${{ steps.should_publish.outputs.value }}"
+
       - name: Generate changelog
         if: ${{ steps.should_publish.outputs.value == true }}
         run: pnpm changeset version
+
       - name: Configure git
         if: ${{ steps.should_publish.outputs.value == true }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Build
         if: ${{ steps.should_publish.outputs.value == true }}
         run: pnpm build
+
       - name: Setup npmrc
         if: ${{ steps.should_publish.outputs.value == true }}
         run: |
@@ -69,15 +79,19 @@ jobs:
         run: |
           git add .
           git commit -m "chore: generate changelog" -m "" -m "" -m "[skip ci]"
+
       - name: Push changes
         if: ${{ steps.should_publish.outputs.value == true }}
         run: git push origin main
+
       - name: Publish to NPM
         if: ${{ steps.should_publish.outputs.value == true }}
         run: pnpm publish -r --report-summary
-      - name: Debug changesets output
+
+      - name: Debug publish summary
         if: ${{ steps.should_publish.outputs.value == true }}
         run: cat pnpm-publish-summary.json
+
       - name: Create slack message
         if: ${{ steps.should_publish.outputs.value == true }}
         id: create_slack_message
@@ -99,6 +113,7 @@ jobs:
             core.info(message)
 
             core.setOutput('message', message)
+
       - name: Send slack message
         if: ${{ steps.should_publish.outputs.value == true }}
         uses: slackapi/slack-github-action@v1.23.0
