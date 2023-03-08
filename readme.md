@@ -4,15 +4,11 @@
 
 ## Workflow to publish changes
 
-1. Add new functionality to the project (e.g. new function).
-2. Run the `pnpm changeset` command and fill in the questions according to the changes made.
-3. Review generated changeset file in `.changeset` directory.
-4. Commit all files.
-5. Push changes to a new branch and open a pull request.
-6. Merge pull request to the `main` branch.
-
-# Permission issues
-
-`changesets/action@v1` requires specific permissions to make changes in repository.
-
-![img.png](assets/permissions.png)
+1. Create a new branch from `main` branch.
+2. Implement a feature (e.g. add a new function).
+3. Generate changeset using `pnpm changeset` command.
+4. Review generated changeset.
+5. Commit changes and push to the remote repository.
+6. Open a pull request to `main` branch.
+7. Merge the pull request.
+8. Enjoy automated package deployment.
