@@ -78,6 +78,7 @@ jobs:
         run: |
           pnpm config set access public --location project
           pnpm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }} --location project
+          pnpm config set ignore-scripts true --location project
 
       - name: Add files, commit changes and push to remote repository
         if: ${{ steps.should_publish.outputs.value == true }}
