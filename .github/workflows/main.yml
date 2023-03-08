@@ -1,16 +1,15 @@
 name: CI/CD
 
-#on:
-#  push:
-#    branches:
-#      - main
+on:
+  push:
+    branches:
+      - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   main:
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     runs-on: ubuntu-22.04
     steps:
@@ -40,17 +39,11 @@ jobs:
 
             const changesetStatus = JSON.parse(fs.readFileSync('./changeset-status.json', { encoding: 'utf8' }))
             core.info(JSON.stringify(changesetStatus))
-            core.info(JSON.stringify(changesetStatus.releases))
-            core.info(changesetStatus.releases.length)
 
             if (changesetStatus.releases.length === 0) {
-              core.info('WTF')
               core.setOutput('res', 'no')
-              core.info(JSON.stringify(changesetStatus.releases))
             } else {
-              core.info('OK')
               core.setOutput('res', 'yes')
-              core.info(JSON.stringify(changesetStatus.releases))
             }
       - name: Debug output
         run: |
@@ -99,7 +92,7 @@ jobs:
 
             let message = '*Successfully published*\n```\n'
             publishSummary.publishedPackages.forEach((publishedPackage) => {
-              message += `  - ${publishedPackage.name}@${publishedPackage.version}\n`
+              message += `- ${publishedPackage.name}@${publishedPackage.version}\n`
             })
             message += '```'
 
@@ -120,7 +113,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.create_slack_message.outputs.message }}"
+                    "text": ${{ toJson(steps.create_slack_message.outputs.message) }}
                   }
                 }
               ]

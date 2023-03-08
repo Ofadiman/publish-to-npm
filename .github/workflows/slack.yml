@@ -13,7 +13,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            core.setOutput('res', '*Successfully published*\n```\n  - @ofadiman/test@1.0.0\n```')
+            core.setOutput('res', '*Slack message workflow*\n```\n  - @foo/bar@1.0.0\n```')
       - name: Send slack message
         uses: slackapi/slack-github-action@v1.23.0
         env:
