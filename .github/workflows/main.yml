@@ -41,11 +41,11 @@ jobs:
       - name: Check types
         run: pnpm check:types
 
-      - name: Changeset status
-        run: pnpm changeset status --output changeset-status.json
-
       - name: Build
         run: pnpm build
+
+      - name: Changeset status
+        run: pnpm changeset status --output changeset-status.json
 
       - name: Find out if there is something to publish
         id: should_publish
@@ -58,41 +58,41 @@ jobs:
             core.info(JSON.stringify(changesetStatus))
 
             if (changesetStatus.releases.length === 0) {
-              core.setOutput('value', false)
+              core.setOutput('value', 'false')
             } else {
-              core.setOutput('value', true)
+              core.setOutput('value', 'true')
             }
 
-      - name: Generate changelog
-        if: ${{ steps.should_publish.outputs.value == true }}
-        run: pnpm changeset version
-
       - name: Configure git
-        if: ${{ steps.should_publish.outputs.value == true }}
+        if: ${{ steps.should_publish.outputs.value == 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Generate changelog
+        if: ${{ steps.should_publish.outputs.value == 'true' }}
+        run: pnpm changeset version
+
       - name: Setup .npmrc
-        if: ${{ steps.should_publish.outputs.value == true }}
+        if: ${{ steps.should_publish.outputs.value == 'true' }}
         run: |
           pnpm config set access public --location project
           pnpm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }} --location project
-          pnpm config set ignore-scripts true --location project
+          pnpm config set ignore-scripts 'true' --location project
 
       - name: Add files, commit changes and push to remote repository
-        if: ${{ steps.should_publish.outputs.value == true }}
+        if: ${{ steps.should_publish.outputs.value == 'true' }}
         run: |
           git add .
           git commit -m "chore: generate changelog" -m "" -m "" -m "[skip ci]"
           git push origin main
 
       - name: Publish to NPM
-        if: ${{ steps.should_publish.outputs.value == true }}
+        if: ${{ steps.should_publish.outputs.value == 'true' }}
         run: pnpm publish -r --report-summary
 
       - name: Create slack message
-        if: ${{ steps.should_publish.outputs.value == true }}
+        if: ${{ steps.should_publish.outputs.value == 'true' }}
         id: create_slack_message
         uses: actions/github-script@v6
         with:
@@ -114,7 +114,7 @@ jobs:
             core.setOutput('message', message)
 
       - name: Send slack message
-        if: ${{ steps.should_publish.outputs.value == true }}
+        if: ${{ steps.should_publish.outputs.value == 'true' }}
         uses: slackapi/slack-github-action@v1.23.0
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
