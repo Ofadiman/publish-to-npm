@@ -60,7 +60,7 @@
     "test": "vitest run --coverage"
   },
   "types": "dist/index.d.ts",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "volta": {
     "node": "18.12.1",
     "pnpm": "7.29.0"
